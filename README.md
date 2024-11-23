@@ -98,34 +98,29 @@ Copier le code
 node index.js
 Scan the QR code displayed in the terminal with your WhatsApp app to link the bot.
 
-📚 Usage
-Key Commands
-!event: Announce an upcoming event.
-!game: Play "Rock, Paper, Scissors" with another member.
-!anime: Get an anime recommendation.
-!help: Display a complete list of available commands.
-Automations
-Welcomes new members and tags them automatically.
-Notifies members of events with group-wide tagging.
-📦 Project Structure
-bash
-Copier le code
-.
-├── .env                Environment variables
-├── .gitignore          Files and directories ignored by Git
-├── index.js            Main bot entry point
-├── package.json        Dependencies and scripts
-├── tetst.js            Temporary test file
-└── node_modules/       Installed dependencies
+# 📚 Usage
 
-🙌 Contributing
+## Key Commands
+- `!event`: Announce an upcoming event.
+- `!game`: Play "Rock, Paper, Scissors" with another member.
+- `!anime`: Get an anime recommendation.
+- `!help`: Display a complete list of available commands.
+
+## Automations
+- Welcomes new members and tags them automatically.
+- Notifies members of events with group-wide tagging.
+
+# 🙌 Contributing
+
 Contributions are welcome! If you’d like to suggest improvements, add new features, or report a bug, feel free to open an issue or a pull request on GitHub.
 
-🛡️ License
-This project is licensed under the MIT License. See the LICENSE file for details.
+# 🛡️ License
 
-💬 Contact
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+# 💬 Contact
+
 If you have any questions or suggestions, feel free to contact me via:
 
-GitHub: MHC32
-LinkedIn: Hantz Michael Chery
+- **GitHub:** [MHC32](https://github.com/MHC32)
+- **LinkedIn:** [Hantz Michael Chery](https://www.linkedin.com/in/hantz-michael-chery-157762164)
