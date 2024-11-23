@@ -2,28 +2,16 @@ const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const path = require("path");
 
-async function getDisplayName(participantId, groupId) {
+async function getDisplayName(participantId, groupId, bot) {
   try {
-    // Récupérer les informations du groupe
-    const group = await bot.getGroupById(groupId);
-
-    // Trouver le participant dans la liste des membres du groupe
-    const participant = group.participants.find(
-      (p) => p.id._serialized === participantId
-    );
-
-    // Si le participant est trouvé, retourner son nom d'affichage
-    if (participant) {
-      return participant.notifyName || participant.id.user; // Utiliser le nom d'affichage ou le numéro si non disponible
-    } else {
-      return null; // Participant non trouvé
-    }
+    const contact = await bot.getContactById(participantId); // Récupérer le contact
+    return contact.pushname || contact.name || participantId.split("@")[0]; // Fallback sur l'ID
   } catch (error) {
     console.error(
-      `Erreur lors de la récupération du nom d'affichage pour ${participantId}:`,
+      `Erreur lors de la récupération du nom pour ${participantId} dans le groupe ${groupId}:`,
       error
     );
-    return null; // En cas d'erreur, retourner null
+    return null;
   }
 }
 
@@ -767,7 +755,6 @@ const groupes = {
   "120363349353432469@g.us": {
     // HENTAI HÀREMU 🇰🇷🇯🇵🇨🇳🇭🇹
     participants: [
-      "50933340014@c.us",
       "50937033502@c.us",
       "50931187734@c.us",
       "50936104806@c.us",
@@ -786,7 +773,6 @@ const groupes = {
       "50941480863@c.us",
       "50936104806@c.us",
       "50942811475@c.us",
-      "50933340014@c.us",
       "50932479710@c.us",
       "50940370516@c.us",
       "50931192830@c.us",
@@ -797,7 +783,6 @@ const groupes = {
   "120363185782927568@g.us": {
     // FUJOSHI'S HOUSE 🫶🔥🇰🇷🇯🇵🇨🇳
     participants: [
-      "50933340014@c.us",
       "50941217121@c.us",
       "50931704893@c.us",
       "50947761013@c.us",
@@ -871,7 +856,6 @@ const groupes = {
       "50941480863@c.us",
       "50936104806@c.us",
       "50942811475@c.us",
-      "50933340014@c.us",
       "50932479710@c.us",
       "50940370516@c.us",
       "50931192830@c.us",
@@ -885,7 +869,7 @@ const groupes = {
       "50941480863@c.us",
       "50936104806@c.us",
       "50942811475@c.us",
-      "50933340014@c.us",
+      "50937033502@c.us",
       "50932479710@c.us",
       "50940370516@c.us",
       "50931192830@c.us",
@@ -896,7 +880,6 @@ const groupes = {
       "50941480863@c.us",
       "50936104806@c.us",
       "50942811475@c.us",
-      "50933340014@c.us",
       "50932479710@c.us",
       "50940370516@c.us",
       "50931192830@c.us",
@@ -919,7 +902,6 @@ const groupes = {
       "50939401994@c.us",
       "50938362694@c.us",
       "50935664595@c.us",
-      "50933340014@c.us",
       "50936975946@c.us",
       "50936486896@c.us",
       "50932118234@c.us",
@@ -950,7 +932,6 @@ const groupes = {
       "50941480863@c.us",
       "50936104806@c.us",
       "50942811475@c.us",
-      "50933340014@c.us",
       "50932479710@c.us",
       "50940370516@c.us",
       "50931192830@c.us",
@@ -1431,10 +1412,10 @@ bot.on("message", async (message) => {
                 }
 
                 // Logger tous les participants à mentionner
-                console.log(`Participants à mentionner:`);
-                group.participants.forEach((participant) => {
-                  console.log(`ID du participant: ${participant}`);
-                });
+                console.log(
+                  `Participants à mentionner (${group.participants.length} au total) :`
+                );
+                group.participants.forEach((p) => console.log(` - ${p}`));
 
                 // Préparer les mentions avec les noms d'affichage
                 const mentions = [];
@@ -1442,8 +1423,9 @@ bot.on("message", async (message) => {
                 for (const participant of group.participants) {
                   const displayName = await getDisplayName(
                     participant,
-                    groupIdAnnounce
-                  ); // Récupérer le nom d'affichage
+                    groupIdAnnounce,
+                    bot
+                  ); // Appel avec le bot
                   if (displayName) {
                     mentions.push({
                       id: participant,
@@ -1454,15 +1436,26 @@ bot.on("message", async (message) => {
                     console.log(
                       `Nom d'affichage non trouvé pour ${participant}`
                     );
+                    mentionText.push(`@${participant.split("@")[0]}`); // Fallback
                   }
                 }
 
-                // Loguer le message avant l'envoi
+                // Vérifier s'il y a des mentions
+                if (!mentions.length) {
+                  console.log("Aucune mention n'a pu être générée.");
+                  await bot.sendMessage(
+                    groupIdAnnounce,
+                    `📢 *Annonce importante* :\n${announcement}\n⚠️ Aucune mention n'a été ajoutée.`
+                  );
+                  return;
+                }
+
+                // Préparer le texte final avec les mentions
                 const messageToSend = {
-                  text: `📢 *Annonce importante* :\n${announcement}\n${mentionText.join(
-                    " "
-                  )}`,
-                  mentions: mentions.map((mention) => ({ id: mention.id })),
+                  text: `📢 *Annonce importante* 📢 :\n${announcement}\n${mentions
+                    .map((mention) => mention.displayName)
+                    .join(" ")}`, // Ajouter les noms formatés dans le texte
+                  mentions: mentions.map((mention) => ({ id: mention.id })), // Associer les mentions par ID
                 };
 
                 console.log(`Message à envoyer :`);
