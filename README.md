@@ -30,7 +30,7 @@ Before starting, make sure you have the following installed:
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/bot-name.git
+   git clone https://github.com/MHC32/Saiko-no-otaku.git
    cd bot-name
 
 
@@ -111,12 +111,13 @@ Notifies members of events with group-wide tagging.
 bash
 Copier le code
 .
-├── .env                # Environment variables
-├── .gitignore          # Files and directories ignored by Git
-├── index.js            # Main bot entry point
-├── package.json        # Dependencies and scripts
-├── tetst.js            # Temporary test file
-└── node_modules/       # Installed dependencies
+├── .env                Environment variables
+├── .gitignore          Files and directories ignored by Git
+├── index.js            Main bot entry point
+├── package.json        Dependencies and scripts
+├── tetst.js            Temporary test file
+└── node_modules/       Installed dependencies
+
 🙌 Contributing
 Contributions are welcome! If you’d like to suggest improvements, add new features, or report a bug, feel free to open an issue or a pull request on GitHub.
 
