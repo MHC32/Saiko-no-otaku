@@ -706,6 +706,12 @@ Voici notre Modèle de Présentation :
     welcomeImage: path.join(__dirname, "whatsapp-bot/assets/fujoshi.jpg"),
     welcomeMessage: `
 🌟 *Bienvenue sur notre groupe Fujoshi\'s House 🔥* 🌟
+    Içi nous partageons des Contenus à caractère Homosexuels 👨‍❤️‍💋‍👨👩‍❤️‍💋‍👩 à savoir Photos, Vidéos,livres ect...
+    Si tel est vos Souhaits pour être parmi nous Nous vous Souhaitons la plus cordiales des Bienvenue.
+    Sinon vous pouvez Rebrousser votre chemin.
+   
+   Merci de votre compréhension !!!
+
 Voici notre Modèle de Présentation :
 
 ◇ Nom et Prénom  
@@ -778,6 +784,7 @@ const groupes = {
       "50931192830@c.us",
       "50936048429@c.us",
       "50931187734@c.us",
+      "50937033502@c.us",
     ],
   },
   "120363185782927568@g.us": {
@@ -861,6 +868,7 @@ const groupes = {
       "50931192830@c.us",
       "50936048429@c.us",
       "50931187734@c.us",
+      "50937033502@c.us",
     ],
   },
   "120363359615350827@g.us": {
@@ -937,6 +945,7 @@ const groupes = {
       "50931192830@c.us",
       "50936048429@c.us",
       "50931187734@c.us",
+      "50937033502@c.us",
     ],
   },
 };
@@ -1260,6 +1269,14 @@ bot.on("message", async (message) => {
   try {
     // Vérifier si le message commence par "!"
     if (message.body.startsWith("!")) {
+      try {
+        // Utiliser l'ID du message pour le supprimer
+        await message.delete(message.id, true); // false = suppression pour tout le monde
+        console.log(`Message supprimé : ${message.body}`);
+      } catch (error) {
+        console.error("Erreur lors de la suppression du message :", error);
+      }
+
       const args = message.body.slice(1).trim().split(/ +/); // Supprime le "!" et divise les arguments
       const command = args.shift().toLowerCase(); // Première partie = commande
 
@@ -1496,120 +1513,120 @@ bot.on("message", async (message) => {
           }
           break;
 
-          case "meeting":
-            const groupIdMeeting = message.from;
-          
-            // Vérifier que le message est envoyé dans le groupe autorisé
-            if (groupIdMeeting !== "120363359615350827@g.us") {
-              await bot.sendMessage(
-                groupIdMeeting,
-                "❌ Cette commande ne peut être exécutée que dans le groupe *Le cerveau SOOU*."
-              );
-              console.log(
-                `Commande refusée : tentative d'exécution dans un groupe non autorisé (${groupIdMeeting}).`
-              );
-              return;
-            }
-          
-            // Vérifier si l'utilisateur est admin
-            if (isAdmin(message.author, groupIdMeeting)) {
-              const meetingTime = message.body.replace("!meeting ", "").trim();
-          
-              if (meetingTime) {
-                try {
-                  // Récupération des informations du groupe
-                  const group = groupes[groupIdMeeting];
-                  if (!group || !group.participants.length) {
-                    console.log(
-                      `Aucun participant trouvé dans le groupe ${groupIdMeeting}`
-                    );
-                    await bot.sendMessage(
-                      groupIdMeeting,
-                      "❌ Impossible de récupérer les participants du groupe."
-                    );
-                    return;
-                  }
-          
+        case "meeting":
+          const groupIdMeeting = message.from;
+
+          // Vérifier que le message est envoyé dans le groupe autorisé
+          if (groupIdMeeting !== "120363359615350827@g.us") {
+            await bot.sendMessage(
+              groupIdMeeting,
+              "❌ Cette commande ne peut être exécutée que dans le groupe *Le cerveau SOOU*."
+            );
+            console.log(
+              `Commande refusée : tentative d'exécution dans un groupe non autorisé (${groupIdMeeting}).`
+            );
+            return;
+          }
+
+          // Vérifier si l'utilisateur est admin
+          if (isAdmin(message.author, groupIdMeeting)) {
+            const meetingTime = message.body.replace("!meeting ", "").trim();
+
+            if (meetingTime) {
+              try {
+                // Récupération des informations du groupe
+                const group = groupes[groupIdMeeting];
+                if (!group || !group.participants.length) {
                   console.log(
-                    `Participants détectés (${group.participants.length} au total) :`
-                  );
-                  group.participants.forEach((p) => console.log(` - ${p}`));
-          
-                  // Préparer les mentions pour les participants
-                  const mentions = [];
-                  for (const participant of group.participants) {
-                    const displayName = await getDisplayName(
-                      participant,
-                      groupIdMeeting,
-                      bot
-                    ); // Appel avec le bot
-                    mentions.push({
-                      id: participant,
-                      displayName: `@${displayName || participant.split("@")[0]}`,
-                    });
-                  }
-          
-                  // Construire le message à envoyer dans le groupe
-                  const messageToSend = {
-                    text: `📅 *Réunion programmée* :\nHeure : ${meetingTime}\n\n${mentions
-                      .map((mention) => mention.displayName)
-                      .join(" ")}, veuillez confirmer votre présence.`,
-                    mentions: mentions.map((mention) => ({ id: mention.id })),
-                  };
-          
-                  // Envoi du message dans le groupe
-                  await bot.sendMessage(groupIdMeeting, messageToSend);
-          
-                  console.log(
-                    `Réunion programmée à ${meetingTime} dans le groupe ${groupIdMeeting}.`
-                  );
-          
-                  // Envoi de messages privés aux participants
-                  for (const participant of group.participants) {
-                    try {
-                      await bot.sendMessage(
-                        participant,
-                        `📅 *Réunion programmée dans le groupe* *Le cerveau SOOU* :\nHeure : ${meetingTime}\n\nMerci de confirmer votre présence dans le groupe.`
-                      );
-                      console.log(
-                        `Message privé envoyé à ${participant} concernant la réunion.`
-                      );
-                    } catch (error) {
-                      console.error(
-                        `Erreur lors de l'envoi d'un message privé à ${participant} :`,
-                        error
-                      );
-                    }
-                  }
-                } catch (error) {
-                  console.error(
-                    `Erreur lors de la planification de la réunion pour ${groupIdMeeting} :`,
-                    error
+                    `Aucun participant trouvé dans le groupe ${groupIdMeeting}`
                   );
                   await bot.sendMessage(
                     groupIdMeeting,
-                    "❌ Une erreur est survenue lors de la planification de la réunion."
+                    "❌ Impossible de récupérer les participants du groupe."
                   );
+                  return;
                 }
-              } else {
-                // L'utilisateur n'a pas spécifié l'heure
+
+                console.log(
+                  `Participants détectés (${group.participants.length} au total) :`
+                );
+                group.participants.forEach((p) => console.log(` - ${p}`));
+
+                // Préparer les mentions pour les participants
+                const mentions = [];
+                for (const participant of group.participants) {
+                  const displayName = await getDisplayName(
+                    participant,
+                    groupIdMeeting,
+                    bot
+                  ); // Appel avec le bot
+                  mentions.push({
+                    id: participant,
+                    displayName: `@${displayName || participant.split("@")[0]}`,
+                  });
+                }
+
+                // Construire le message à envoyer dans le groupe
+                const messageToSend = {
+                  text: `📅 *Réunion programmée* :\nHeure : ${meetingTime}\n\n${mentions
+                    .map((mention) => mention.displayName)
+                    .join(" ")}, veuillez confirmer votre présence.`,
+                  mentions: mentions.map((mention) => ({ id: mention.id })),
+                };
+
+                // Envoi du message dans le groupe
+                await bot.sendMessage(groupIdMeeting, messageToSend);
+
+                console.log(
+                  `Réunion programmée à ${meetingTime} dans le groupe ${groupIdMeeting}.`
+                );
+
+                // Envoi de messages privés aux participants
+                for (const participant of group.participants) {
+                  try {
+                    await bot.sendMessage(
+                      participant,
+                      `📅 *Réunion programmée dans le groupe* *Le cerveau SOOU* :\nHeure : ${meetingTime}\n\nMerci de confirmer votre présence dans le groupe.`
+                    );
+                    console.log(
+                      `Message privé envoyé à ${participant} concernant la réunion.`
+                    );
+                  } catch (error) {
+                    console.error(
+                      `Erreur lors de l'envoi d'un message privé à ${participant} :`,
+                      error
+                    );
+                  }
+                }
+              } catch (error) {
+                console.error(
+                  `Erreur lors de la planification de la réunion pour ${groupIdMeeting} :`,
+                  error
+                );
                 await bot.sendMessage(
                   groupIdMeeting,
-                  "❌ Veuillez spécifier une heure après la commande `!meeting`."
+                  "❌ Une erreur est survenue lors de la planification de la réunion."
                 );
               }
             } else {
-              // L'utilisateur n'est pas admin
+              // L'utilisateur n'a pas spécifié l'heure
               await bot.sendMessage(
                 groupIdMeeting,
-                "❌ Vous n'avez pas les permissions nécessaires pour programmer une réunion."
-              );
-              console.log(
-                `Utilisateur non-admin (${message.author}) a tenté de programmer une réunion.`
+                "❌ Veuillez spécifier une heure après la commande `!meeting`."
               );
             }
-            break;
-                                
+          } else {
+            // L'utilisateur n'est pas admin
+            await bot.sendMessage(
+              groupIdMeeting,
+              "❌ Vous n'avez pas les permissions nécessaires pour programmer une réunion."
+            );
+            console.log(
+              `Utilisateur non-admin (${message.author}) a tenté de programmer une réunion.`
+            );
+          }
+          break;
+
         default:
           await message.reply(
             "Commande inconnue. Tapez `!help` pour la liste des commandes."
@@ -1620,6 +1637,25 @@ bot.on("message", async (message) => {
   } catch (error) {
     console.error("Erreur lors du traitement du message :", error);
   }
+});
+
+bot.on("ready", async () => {
+  console.log("Client prêt !");
+
+  // Récupérer toutes les conversations
+  const chats = await bot.getChats();
+  console.log(`Nombre total de conversations : ${chats.length}`);
+
+  // Lister les noms et IDs de toutes les conversations
+  chats.forEach((chat, index) => {
+    console.log(
+      `[${index + 1}] Nom : ${chat.name || "Conversation individuelle"}`
+    );
+    console.log(`   ID : ${chat.id._serialized}`);
+    console.log(`   Est un groupe : ${chat.isGroup}`);
+  });
+
+  console.log("Liste des conversations affichée avec succès !");
 });
 
 // Lancement du bot
