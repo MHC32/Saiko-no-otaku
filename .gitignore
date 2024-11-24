@@ -34,3 +34,6 @@ build/
 
 .wwebjs_auth/
 .wwebjs_cache/
+
+.ENV
+config/firebase
