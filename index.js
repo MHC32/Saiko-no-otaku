@@ -15,6 +15,14 @@ async function getDisplayName(participantId, groupId, bot) {
   }
 }
 
+const grades = {
+  novice: { minMessages: 0, description: 'Nouveau membre' },
+  intermédiaire: { minMessages: 50, description: 'Membre actif' },
+  expert: { minMessages: 200, description: 'Membre très actif' },
+  mestreOtaku: { minMessages: 500, description: 'Membre d\'élite' },
+};
+
+
 function playRockPaperScissors(args) {
   const choices = ["feuille", "papier", "ciseaux"];
   const userChoice = args[0]?.toLowerCase();
@@ -1286,38 +1294,38 @@ bot.on("message", async (message) => {
         case "help":
           await message.reply(
             "*Commandes disponibles :*\n" +
-              "- `!help` : Affiche cette liste\n" +
-              "- `!rules` : Règles du groupe\n" +
-              "- `!events` : Programme des événements\n" +
-              "- `!anime [genre/nom]` : Recommandation d'anime\n" +
-              "- `!game` : Jouer à Feuille, Papier, Ciseaux\n" +
-              "- `!close` : Ferme le groupe (admin seulement)\n" +
-              "- `!open` : Ouvre le groupe (admin seulement)\n" +
-              "- `!announce [message]` : Envoie une annonce avec mention des participants\n" +
-              "- `!meeting [heure]` : Planifie une réunion (admin seulement)"
+            "- `!help` : Affiche cette liste\n" +
+            "- `!rules` : Règles du groupe\n" +
+            "- `!events` : Programme des événements\n" +
+            "- `!anime [genre/nom]` : Recommandation d'anime\n" +
+            "- `!game` : Jouer à Feuille, Papier, Ciseaux\n" +
+            "- `!close` : Ferme le groupe (admin seulement)\n" +
+            "- `!open` : Ouvre le groupe (admin seulement)\n" +
+            "- `!announce [message]` : Envoie une annonce avec mention des participants\n" +
+            "- `!meeting [heure]` : Planifie une réunion (admin seulement)"
           );
           break;
 
         case "rules":
           await message.reply(
             "*Règles du groupe :*\n" +
-              "1️⃣ Pas de spam\n" +
-              "2️⃣ Respectez les autres membres\n" +
-              "3️⃣ Publiez uniquement du contenu lié aux animes/mangas\n" +
-              "4️⃣ Participez aux événements !"
+            "1️⃣ Pas de spam\n" +
+            "2️⃣ Respectez les autres membres\n" +
+            "3️⃣ Publiez uniquement du contenu lié aux animes/mangas\n" +
+            "4️⃣ Participez aux événements !"
           );
           break;
 
         case "events":
           await message.reply(
             "*Programme de la semaine - Saikò No Otaku :*\n" +
-              "🌟 *Lundi* : Quizz\n" +
-              "🌟 *Mardi* : Thèmes & Personnages\n" +
-              "🌟 *Mercredi* : Gaming Night\n" +
-              "🌟 *Jeudi* : Nouveaux Animés\n" +
-              "🌟 *Vendredi* : Débat + Quizz\n" +
-              "🌟 *Samedi* : Projection Animé\n" +
-              "🌟 *Dimanche* : Rétrospective"
+            "🌟 *Lundi* : Quizz\n" +
+            "🌟 *Mardi* : Thèmes & Personnages\n" +
+            "🌟 *Mercredi* : Gaming Night\n" +
+            "🌟 *Jeudi* : Nouveaux Animés\n" +
+            "🌟 *Vendredi* : Débat + Quizz\n" +
+            "🌟 *Samedi* : Projection Animé\n" +
+            "🌟 *Dimanche* : Rétrospective"
           );
           break;
 
