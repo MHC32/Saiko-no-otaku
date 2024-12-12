@@ -1,6 +1,7 @@
 const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const path = require("path");
+import { db, collection, getDocs } from './firebase';
 
 async function getDisplayName(participantId, groupId, bot) {
   try {
